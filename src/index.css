@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --color-wedding-gold: #D4AF37;
+  --color-wedding-gold-dark: #C5A059;
+  --color-wedding-bg: #FAF8F5;
+  --color-wedding-charcoal: #1a1a1a;
+  --color-wedding-blush: #f8e6e5;
+  
+  --font-cairo: 'Cairo', sans-serif;
+  --font-messiri: 'El Messiri', sans-serif;
+  --font-ruqaa: 'Aref Ruqaa', serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-wedding-bg);
+    color: var(--color-wedding-charcoal);
+    font-family: var(--font-cairo);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-messiri);
+  }
+}
+
+/* Custom Scrollbar for a luxury feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: var(--color-wedding-bg);
+}
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--color-wedding-gold) 50%, transparent);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-wedding-gold);
+}
