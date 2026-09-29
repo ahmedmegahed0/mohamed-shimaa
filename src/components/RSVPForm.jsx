@@ -20,10 +20,45 @@ const RSVPForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
-    // For native form submission, we just show a loading state 
-    // and let the browser do the POST request to formsubmit.co
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setIsSubmitting(true);
+
+    try {
+      // إعدادات EmailJS
+      const serviceId = 'service_o7tt0ai';
+      const templateId = 'template_xplzgdc';
+      const publicKey = 'mE-1qW7a-66Q1GrpH'; 
+
+      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service_id: serviceId,
+          template_id: templateId,
+          user_id: publicKey,
+          template_params: {
+            Name: formData.fullName,
+            Guests: formData.guestsCount,
+            Attendance: formData.attendanceStatus === 'yes' ? 'أكيد هاجي بكل حب ❤️' : 'للأسف مش هقدر أجي',
+            Message: formData.message || 'لا يوجد'
+          }
+        })
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        alert("حدث خطأ أثناء إرسال البيانات، يرجى المحاولة مرة أخرى.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("حدث خطأ أثناء إرسال البيانات، يرجى المحاولة مرة أخرى.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -53,11 +88,7 @@ const RSVPForm = () => {
           ) : (
             <>
               <h2 className="text-4xl font-kufi text-center text-wedding-charcoal mb-10">تأكيد الحضور</h2>
-              <form action="https://formsubmit.co/mfoash287@gmail.com" method="POST" onSubmit={handleSubmit} className="space-y-6">
-                {/* FormSubmit Configuration */}
-                <input type="hidden" name="_subject" value="New RSVP - Wedding Invitation" />
-                <input type="hidden" name="_captcha" value="false" />
-                <input type="hidden" name="_next" value="https://mohamed-shimaa.vercel.app/" />
+              <form onSubmit={handleSubmit} className="space-y-6">
 
                 {/* Full Name */}
                 <div>
