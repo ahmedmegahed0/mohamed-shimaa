@@ -18,12 +18,38 @@ const RSVPForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitted(true);
-    }, 800);
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/mfoash287@gmail.com", {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          "الاسم": formData.fullName,
+          "عدد الحضور": formData.guestsCount,
+          "حالة الحضور": formData.attendanceStatus === 'yes' ? 'أكيد هاجي بكل حب ❤️' : 'للأسف مش هقدر أجي',
+          "رسالة تهنئة": formData.message || 'لا يوجد'
+        })
+      });
+      
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        alert("حدث خطأ أثناء إرسال البيانات، يرجى المحاولة مرة أخرى.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("حدث خطأ أثناء إرسال البيانات، يرجى المحاولة مرة أخرى.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -138,9 +164,12 @@ const RSVPForm = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-4 bg-wedding-gold text-white rounded-xl font-kufi text-xl hover:bg-wedding-gold-dark shadow-lg shadow-wedding-gold/20 transition-all duration-300"
+                  disabled={isSubmitting}
+                  className={`w-full py-4 bg-wedding-gold text-white rounded-xl font-kufi text-xl shadow-lg shadow-wedding-gold/20 transition-all duration-300 ${
+                    isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-wedding-gold-dark'
+                  }`}
                 >
-                  إرسال الرد
+                  {isSubmitting ? 'جاري الإرسال...' : 'إرسال الرد'}
                 </button>
               </form>
             </>
