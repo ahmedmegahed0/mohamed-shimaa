@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import logoImg from '../assets/logo.jpeg';
 
 const StorySection = () => {
   return (
@@ -34,7 +35,7 @@ const StorySection = () => {
         <div className="relative w-64 h-80 md:w-80 md:h-[26rem] rounded-t-full rounded-b-3xl overflow-hidden shadow-2xl shadow-wedding-gold/20 border-4 border-white">
           {/* We use logo.jpeg as requested */}
           <img 
-            src="/src/assets/logo.jpeg" 
+            src={logoImg} 
             alt="العروسين" 
             className="w-full h-full object-cover"
           />
