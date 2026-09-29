@@ -20,36 +20,10 @@ const RSVPForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = (e) => {
+    // For native form submission, we just show a loading state 
+    // and let the browser do the POST request to formsubmit.co
     setIsSubmitting(true);
-    
-    try {
-      const response = await fetch("https://formsubmit.co/ajax/mfoash287@gmail.com", {
-        method: "POST",
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          "الاسم": formData.fullName,
-          "عدد الحضور": formData.guestsCount,
-          "حالة الحضور": formData.attendanceStatus === 'yes' ? 'أكيد هاجي بكل حب ❤️' : 'للأسف مش هقدر أجي',
-          "رسالة تهنئة": formData.message || 'لا يوجد'
-        })
-      });
-      
-      if (response.ok) {
-        setIsSubmitted(true);
-      } else {
-        alert("حدث خطأ أثناء إرسال البيانات، يرجى المحاولة مرة أخرى.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("حدث خطأ أثناء إرسال البيانات، يرجى المحاولة مرة أخرى.");
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   return (
@@ -79,18 +53,22 @@ const RSVPForm = () => {
           ) : (
             <>
               <h2 className="text-4xl font-kufi text-center text-wedding-charcoal mb-10">تأكيد الحضور</h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                
+              <form action="https://formsubmit.co/mfoash287@gmail.com" method="POST" onSubmit={handleSubmit} className="space-y-6">
+                {/* FormSubmit Configuration */}
+                <input type="hidden" name="_subject" value="New RSVP - Wedding Invitation" />
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="_next" value="https://mohamed-shimaa.vercel.app/" />
+
                 {/* Full Name */}
                 <div>
                   <label htmlFor="fullName" className="block text-lg font-kufi mb-2 text-wedding-charcoal">الاسم بالكامل</label>
                   <input
                     type="text"
                     id="fullName"
-                    name="fullName"
+                    name="Name"
                     required
                     value={formData.fullName}
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                     className="w-full px-4 py-3 rounded-xl border border-wedding-gold/30 bg-wedding-bg/50 focus:outline-none focus:ring-2 focus:ring-wedding-gold/50 font-amiri text-lg transition-all"
                     placeholder="اكتب اسمك هنا..."
                   />
@@ -101,9 +79,9 @@ const RSVPForm = () => {
                   <label htmlFor="guestsCount" className="block text-lg font-kufi mb-2 text-wedding-charcoal">عدد الحضور</label>
                   <select
                     id="guestsCount"
-                    name="guestsCount"
+                    name="Guests"
                     value={formData.guestsCount}
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({...formData, guestsCount: e.target.value})}
                     className="w-full px-4 py-3 rounded-xl border border-wedding-gold/30 bg-wedding-bg/50 focus:outline-none focus:ring-2 focus:ring-wedding-gold/50 font-amiri text-lg appearance-none transition-all"
                   >
                     <option value="فرد واحد">فرد واحد</option>
@@ -119,10 +97,10 @@ const RSVPForm = () => {
                     <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-all duration-300 ${formData.attendanceStatus === 'yes' ? 'border-wedding-gold bg-wedding-gold/5' : 'border-wedding-gold/20 hover:border-wedding-gold/50'}`}>
                       <input
                         type="radio"
-                        name="attendanceStatus"
-                        value="yes"
+                        name="Attendance"
+                        value="أكيد هاجي بكل حب ❤️"
                         checked={formData.attendanceStatus === 'yes'}
-                        onChange={handleChange}
+                        onChange={() => setFormData({...formData, attendanceStatus: 'yes'})}
                         className="hidden"
                       />
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-0 ml-4 ${formData.attendanceStatus === 'yes' ? 'border-wedding-gold' : 'border-gray-300'}`}>
@@ -134,10 +112,10 @@ const RSVPForm = () => {
                     <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-all duration-300 ${formData.attendanceStatus === 'no' ? 'border-wedding-gold bg-wedding-gold/5' : 'border-wedding-gold/20 hover:border-wedding-gold/50'}`}>
                       <input
                         type="radio"
-                        name="attendanceStatus"
-                        value="no"
+                        name="Attendance"
+                        value="للأسف مش هقدر أجي"
                         checked={formData.attendanceStatus === 'no'}
-                        onChange={handleChange}
+                        onChange={() => setFormData({...formData, attendanceStatus: 'no'})}
                         className="hidden"
                       />
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-0 ml-4 ${formData.attendanceStatus === 'no' ? 'border-wedding-gold' : 'border-gray-300'}`}>
@@ -153,10 +131,10 @@ const RSVPForm = () => {
                   <label htmlFor="message" className="block text-lg font-kufi mb-2 text-wedding-charcoal">رسالة تهنئة للعروسين (اختياري)</label>
                   <textarea
                     id="message"
-                    name="message"
+                    name="Message"
                     rows="4"
                     value={formData.message}
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
                     className="w-full px-4 py-3 rounded-xl border border-wedding-gold/30 bg-wedding-bg/50 focus:outline-none focus:ring-2 focus:ring-wedding-gold/50 font-amiri text-lg resize-none transition-all"
                     placeholder="اكتب رسالتك الجميلة هنا..."
                   ></textarea>
@@ -165,9 +143,8 @@ const RSVPForm = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full py-4 bg-wedding-gold text-white rounded-xl font-kufi text-xl shadow-lg shadow-wedding-gold/20 transition-all duration-300 ${
-                    isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-wedding-gold-dark'
-                  }`}
+                  className={`w-full py-4 bg-wedding-gold text-white rounded-xl font-kufi text-xl shadow-lg shadow-wedding-gold/20 transition-all duration-300 ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-wedding-gold-dark'
+                    }`}
                 >
                   {isSubmitting ? 'جاري الإرسال...' : 'إرسال الرد'}
                 </button>
